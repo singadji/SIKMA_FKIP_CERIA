@@ -1,28 +1,27 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 
 Route::get("/", function () {
     return view("welcome");
 });
 
-Route::middleware("auth")->group(function () {
+Route::middleware(["auth", "role:admin|gjm"])->group(function () {
     Route::get("/dashboard", [DashboardController::class, "index"])->name(
         "dashboard",
     );
 
-    Route::get("/profile", [ProfileController::class, "edit"])->name(
-        "profile.edit",
+    Route::get("/laporan/pdf", [ReportController::class, "exportPdf"])->name(
+        "laporan.pdf",
     );
-    Route::patch("/profile", [ProfileController::class, "update"])->name(
-        "profile.update",
-    );
-    Route::delete("/profile", [ProfileController::class, "destroy"])->name(
-        "profile.destroy",
-    );
+
+    Route::get("/laporan/excel", [
+        ReportController::class,
+        "exportExcel",
+    ])->name("laporan.excel");
 });
 
 Route::get("/", [SurveyController::class, "index"]);

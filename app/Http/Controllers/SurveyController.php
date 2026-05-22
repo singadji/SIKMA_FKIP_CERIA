@@ -22,7 +22,7 @@ class SurveyController extends Controller
             "nim" => "required",
         ]);
 
-        $mahasiswa = Mahasiswa::with("jurusan")
+        $mahasiswa = Mahasiswa::with("prodi")
             ->where("nim", $request->nim)
             ->where("status_aktif", 1)
             ->first();

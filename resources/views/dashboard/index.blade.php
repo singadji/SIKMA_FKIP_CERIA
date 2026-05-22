@@ -11,7 +11,31 @@
     </h4>
 
 </div>
+<div class="d-flex gap-2 mb-4">
 
+    <a
+        href="{{ route('laporan.pdf') }}"
+        class="btn btn-danger"
+    >
+
+        <i class="mdi mdi-file-pdf"></i>
+
+        Export PDF
+
+    </a>
+
+    <a
+        href="{{ route('laporan.excel') }}"
+        class="btn btn-success"
+    >
+
+        <i class="mdi mdi-file-excel"></i>
+
+        Export Excel
+
+    </a>
+
+</div>
 <div class="card mb-4">
 
     <div class="card-body">
