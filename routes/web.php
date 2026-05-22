@@ -9,7 +9,7 @@ Route::get("/", function () {
     return view("welcome");
 });
 
-Route::middleware(["auth", "role:admin|gjm"])->group(function () {
+Route::middleware(["auth"])->group(function () {
     Route::get("/dashboard", [DashboardController::class, "index"])->name(
         "dashboard",
     );
@@ -22,6 +22,21 @@ Route::middleware(["auth", "role:admin|gjm"])->group(function () {
         ReportController::class,
         "exportExcel",
     ])->name("laporan.excel");
+
+    Route::get("/laporan/dosen", [
+        ReportController::class,
+        "laporanDosen",
+    ])->name("laporan.dosen");
+
+    Route::get("/laporan/prodi", [
+        ReportController::class,
+        "laporanProdi",
+    ])->name("laporan.prodi");
+
+    Route::get("/laporan/servqual", [
+        ReportController::class,
+        "laporanServqual",
+    ])->name("laporan.servqual");
 });
 
 Route::get("/", [SurveyController::class, "index"]);

@@ -29,6 +29,39 @@
                         <span>Laporan</span>
                     </a>
                 </li>
+                <li>
+
+                    <a href="javascript: void(0);" class="has-arrow">
+
+                        <i class="mdi mdi-file-chart"></i>
+
+                        <span>Laporan Akreditasi</span>
+
+                    </a>
+
+                    <ul class="sub-menu">
+
+                        <li>
+                            <a href="{{ route('laporan.dosen') }}">
+                                Laporan Dosen
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('laporan.prodi') }}">
+                                Laporan Prodi
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('laporan.servqual') }}">
+                                Laporan SERVQUAL
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
             </ul>
         </div>
     </div>
