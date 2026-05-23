@@ -39,27 +39,38 @@ Route::middleware(["auth"])->group(function () {
     ])->name("laporan.servqual");
 });
 
-Route::get("/", [SurveyController::class, "index"]);
+Route::get("/", [SurveyController::class, "index"])->name("survey.index");
+
 Route::post("/cek-nim", [SurveyController::class, "cekNim"])->name(
     "survey.cek-nim",
 );
 
-Route::get("/survey/biodata/{nim}", [SurveyController::class, "biodata"]);
+Route::get("/survey/biodata/{mahasiswa}", [
+    SurveyController::class,
+    "biodata",
+])->name("survey.biodata");
+
 Route::post("/survey/biodata/store-biodata", [
     SurveyController::class,
     "storeBiodata",
 ])->name("storeBiodata");
 
-Route::get("/survey/instrumen/{session}/{instrument}", [
+Route::get("/survey/menu/{mahasiswa}", [SurveyController::class, "menu"])->name(
+    "survey.menu",
+);
+
+Route::get("/survey/instrumen/{mahasiswa}/{instrument}", [
     SurveyController::class,
     "instrumen",
-])->name("instrumen");
+])->name("survey.instrumen");
 
 Route::post("/survey/store-jawaban", [
     SurveyController::class,
     "storeJawaban",
 ])->name("survey.store-jawaban");
 
-Route::get("/survey/selesai", [SurveyController::class, "selesai"]);
+Route::get("/survey/selesai", [SurveyController::class, "selesai"])->name(
+    "survey.selesai",
+);
 
 require __DIR__ . "/auth.php";

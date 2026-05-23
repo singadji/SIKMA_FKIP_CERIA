@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SurveySession extends Model
 {
@@ -13,6 +14,7 @@ class SurveySession extends Model
         "semester",
         "tanggal_survey",
         "status_selesai",
+        "uuid",
     ];
 
     public function mahasiswa()
@@ -23,5 +25,21 @@ class SurveySession extends Model
     public function answers()
     {
         return $this->hasMany(SurveyAnswer::class, "session_id");
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return "uuid";
     }
 }

@@ -21,99 +21,63 @@ class SurveyController extends Controller
         $request->validate([
             "nim" => "required",
         ]);
-
         $mahasiswa = Mahasiswa::with("prodi")
             ->where("nim", $request->nim)
             ->where("status_aktif", 1)
             ->first();
-
         if (!$mahasiswa) {
             return back()->with("error", "NIM tidak terdaftar");
         }
-
-        return redirect("/survey/biodata/" . $mahasiswa->nim);
+        return redirect("/survey/biodata/" . $mahasiswa->uuid);
     }
 
-    public function biodata($nim)
+    public function biodata(Mahasiswa $mahasiswa)
     {
-        $mahasiswa = Mahasiswa::with("prodi")
-            ->where("nim", $nim)
-            ->firstOrFail();
         return view("survey.biodata", compact("mahasiswa"));
     }
 
     public function storeBiodata(Request $request)
     {
         $mahasiswa = Mahasiswa::findOrFail($request->mahasiswa_id);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK DOUBLE SURVEY
-        |--------------------------------------------------------------------------
-        */
-
-        $cek = SurveySession::where("mahasiswa_id", $mahasiswa->id)
-            ->where("tahun_akademik", "2025/2026")
-            ->exists();
-
-        if ($cek) {
-            return back()->with("error", "Anda sudah mengisi survey");
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | BUAT SESSION SURVEY
-        |--------------------------------------------------------------------------
-        */
-
         $instrumentId = SurveyInstrument::first()->id;
-
-        $session = SurveySession::create([
-            "mahasiswa_id" => $mahasiswa->id,
-            "tahun_akademik" => "2025/2026",
-            "semester" => "Genap",
-            "tanggal_survey" => now(),
-            "status_selesai" => false,
-        ]);
-
-        return redirect(
-            "/survey/instrumen/" . $session->id . "/" . $instrumentId,
-        );
+        return redirect()->route("survey.menu", $mahasiswa->uuid);
     }
 
-    public function instrumen($sessionId, $instrumentId)
+    public function instrumen(Mahasiswa $mahasiswa, $instrumentId)
     {
-        $session = SurveySession::findOrFail($sessionId);
+        //$mahasiswa = Mahasiswa::findOrFail($mahasiswaId);
+        if ($instrumentId == 2 || $instrumentId == 3) {
+            $cek = SurveyAnswer::whereHas("session", function ($q) use (
+                $mahasiswa,
+            ) {
+                $q->where("mahasiswa_id", $mahasiswa->id);
+            })
+                ->where("instrument_id", $instrumentId)
+                ->exists();
+
+            if ($cek) {
+                return redirect()
+                    ->route("survey.menu", $mahasiswa->uuid)
+                    ->with("error", "Instrumen sudah pernah diisi.");
+            }
+        }
+
         $instrument = SurveyInstrument::with([
             "categories.questions",
         ])->findOrFail($instrumentId);
 
-        $progress = 0;
-        if ($instrumentId == 1) {
-            $progress = 33;
-        }
-
-        if ($instrumentId == 2) {
-            $progress = 66;
-        }
-
-        if ($instrumentId == 3) {
-            $progress = 100;
-        }
-
-        return view(
-            "survey.instrumen",
-            compact("session", "instrument", "progress"),
-        );
+        return view("survey.instrumen", compact("mahasiswa", "instrument"));
     }
 
     public function storeJawaban(Request $request)
     {
         $request->validate([
-            "session_id" => "required",
+            "mahasiswa_id" => "required",
             "instrument_id" => "required",
             "jawaban" => "required|array",
         ]);
+
+        $mahasiswa = Mahasiswa::findOrFail($request->mahasiswa_id);
 
         $totalPertanyaan = SurveyQuestion::where(
             "instrument_id",
@@ -124,72 +88,263 @@ class SurveyController extends Controller
 
         if ($totalJawaban < $totalPertanyaan) {
             return back()
-                ->with(
-                    "error",
-                    "Semua pertanyaan pada instrumen ini wajib diisi.",
-                )
+                ->with("error", "Semua pertanyaan wajib diisi.")
                 ->withInput();
         }
 
         if ($request->instrument_id == 1) {
             $request->validate([
                 "dosen" => "required",
-
                 "mata_kuliah" => "required",
             ]);
-        }
 
-        foreach ($request->jawaban as $questionId => $value) {
-            $question = SurveyQuestion::find($questionId);
+            $dosen = $this->normalizeText($request->dosen);
+            $mataKuliah = $this->normalizeText($request->mata_kuliah);
 
-            $existing = SurveyAnswer::where([
-                "session_id" => $request->session_id,
-                "question_id" => $questionId,
-            ])->first();
+            $cek = SurveyAnswer::whereHas("session", function ($q) use (
+                $request,
+            ) {
+                $q->where("mahasiswa_id", $request->mahasiswa_id);
+            })
+                ->where("instrument_id", 1)
+                ->whereRaw("LOWER(dosen) LIKE ?", ["%" . $dosen . "%"])
+                ->whereRaw("LOWER(mata_kuliah) LIKE ?", [
+                    "%" . $mataKuliah . "%",
+                ])
+                ->exists();
 
-            if (!$existing) {
-                SurveyAnswer::create([
-                    "session_id" => $request->session_id,
-                    "instrument_id" => $question->instrument_id,
-                    "question_id" => $questionId,
-                    "jawaban" => $value,
-                    "dosen_id" => $request->dosen_id,
-                    "mata_kuliah_id" => $request->mata_kuliah_id,
-                ]);
+            if ($cek) {
+                return back()->with(
+                    "error",
+                    "Anda sudah menilai dosen dan mata kuliah ini.",
+                );
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | NEXT INSTRUMEN
-        |--------------------------------------------------------------------------
-        */
-
-        $next = $request->instrument_id + 1;
-
-        if ($next <= 3) {
-            return redirect(
-                "/survey/instrumen/" . $request->session_id . "/" . $next,
-            );
+        if ($request->instrument_id == 2 || $request->instrument_id == 3) {
+            $cek = SurveyAnswer::whereHas("session", function ($q) use (
+                $request,
+            ) {
+                $q->where("mahasiswa_id", $request->mahasiswa_id);
+            })
+                ->where("instrument_id", $request->instrument_id)
+                ->exists();
+            if ($cek) {
+                return back()->with(
+                    "error",
+                    "Instrumen ini sudah pernah diisi.",
+                );
+            }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SELESAIKAN SURVEY
-        |--------------------------------------------------------------------------
-        */
+        $periode = $this->getAcademicPeriod();
 
-        $session = SurveySession::find($request->session_id);
-
-        $session->update([
+        $session = SurveySession::create([
+            "mahasiswa_id" => $request->mahasiswa_id,
+            "tahun_akademik" => $periode["tahun_akademik"],
+            "semester" => $periode["semester"],
+            "tanggal_survey" => now(),
             "status_selesai" => true,
         ]);
 
-        return redirect("/survey/selesai");
+        foreach ($request->jawaban as $questionId => $value) {
+            $question = SurveyQuestion::find($questionId);
+            SurveyAnswer::create([
+                "session_id" => $session->id,
+                "instrument_id" => $question->instrument_id,
+                "question_id" => $questionId,
+                "jawaban" => $value,
+                "dosen_id" => $request->dosen_id,
+                "mata_kuliah_id" => $request->mata_kuliah_id,
+                "dosen" => $request->dosen,
+                "mata_kuliah" => $request->mata_kuliah,
+            ]);
+        }
+
+        if ($request->instrument_id == 1) {
+            $sudahInstrumen2 = SurveyAnswer::whereHas("session", function (
+                $q,
+            ) use ($request) {
+                $q->where("mahasiswa_id", $request->mahasiswa_id);
+            })
+                ->where("instrument_id", 2)
+                ->exists();
+            if (!$sudahInstrumen2) {
+                return redirect()
+                    ->route("survey.instrumen", [$mahasiswa->uuid, 2])
+                    ->with(
+                        "success",
+                        "Instrumen 1 berhasil disimpan. Silakan lanjut ke Instrumen 2.",
+                    );
+            }
+            return redirect()
+                ->route("survey.menu", [$mahasiswa->uuid])
+                ->with("success", "Survey Instrumen 1 berhasil disimpan.");
+        }
+
+        if ($request->instrument_id == 2) {
+            $sudahInstrumen3 = SurveyAnswer::whereHas("session", function (
+                $q,
+            ) use ($request) {
+                $q->where("mahasiswa_id", $request->mahasiswa_id);
+            })
+                ->where("instrument_id", 3)
+                ->exists();
+
+            if (!$sudahInstrumen3) {
+                return redirect()
+                    ->route("survey.instrumen", [$mahasiswa->uuid, 3])
+
+                    ->with(
+                        "success",
+                        "Instrumen 2 berhasil disimpan. Silakan lanjut ke Instrumen 3.",
+                    );
+            }
+
+            return redirect()
+                ->route("survey.menu", [$mahasiswa->uuid])
+
+                ->with("success", "Survey Instrumen 2 berhasil disimpan.");
+        }
+
+        return redirect()
+            ->route("survey.selesai")
+            ->with("success", "Terima kasih telah mengisi survey.");
     }
 
     public function selesai()
     {
         return view("survey.selesai");
+    }
+
+    public function menu(Mahasiswa $mahasiswa)
+    {
+        //$mahasiswa = Mahasiswa::findOrFail($mahasiswaId);
+
+        $instrumen1 = SurveyAnswer::whereHas("session", function ($q) use (
+            $mahasiswa,
+        ) {
+            $q->where("mahasiswa_id", $mahasiswa->id);
+        })
+            ->where("instrument_id", 1)
+            ->exists();
+
+        $instrumen2 = SurveyAnswer::whereHas("session", function ($q) use (
+            $mahasiswa,
+        ) {
+            $q->where("mahasiswa_id", $mahasiswa->id);
+        })
+            ->where("instrument_id", 2)
+            ->exists();
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS INSTRUMEN 3
+        |--------------------------------------------------------------------------
+        */
+
+        $instrumen3 = SurveyAnswer::whereHas("session", function ($q) use (
+            $mahasiswa,
+        ) {
+            $q->where("mahasiswa_id", $mahasiswa->id);
+        })
+            ->where("instrument_id", 3)
+            ->exists();
+
+        return view(
+            "survey.menu",
+            compact("mahasiswa", "instrumen1", "instrumen2", "instrumen3"),
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET ACADEMIC PERIOD
+    |--------------------------------------------------------------------------
+    */
+
+    private function getAcademicPeriod()
+    {
+        $bulan = now()->month;
+        $tahun = now()->year;
+
+        if ($bulan >= 7) {
+            return [
+                "semester" => "Gasal",
+                "tahun_akademik" => $tahun . "/" . ($tahun + 1),
+            ];
+        }
+        return [
+            "semester" => "Genap",
+            "tahun_akademik" => $tahun - 1 . "/" . $tahun,
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NORMALIZE STRING
+    |--------------------------------------------------------------------------
+    */
+
+    private function normalizeText($text)
+    {
+        $text = strtolower($text);
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS SAPAAN
+        |--------------------------------------------------------------------------
+        */
+
+        $remove = [
+            "bp",
+            "bpk",
+            "bapak",
+            "pak",
+            "pa",
+            "ibu",
+            "bu",
+            "ibuk",
+
+            "dr",
+            "dr.",
+            "ir",
+            "ir.",
+
+            "s.pd",
+            "m.pd",
+            "s.kom",
+            "m.kom",
+        ];
+
+        $text = str_replace($remove, "", $text);
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS KARAKTER KHUSUS
+        |--------------------------------------------------------------------------
+        */
+
+        $text = preg_replace("/[^a-z0-9\s]/", "", $text);
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS SPASI BERLEBIH
+        |--------------------------------------------------------------------------
+        */
+
+        $text = preg_replace("/\s+/", " ", $text);
+
+        $text = trim($text);
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL KATA PERTAMA SAJA
+        |--------------------------------------------------------------------------
+        */
+
+        $words = explode(" ", $text);
+
+        return $words[0] ?? $text;
     }
 }

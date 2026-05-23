@@ -1,29 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-    <title>{{ $instrument->nama_instrumen }}</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
-</head>
-
-<body class="bg-light">
+@extends('layouts.survey')
 
 <div class="container mt-4">
     <div class="mb-4">
-
         <h2 class="fw-bold">
             {{ $instrument->nama_instrumen }}
         </h2>
-
         <p class="text-muted">
             Berikan penilaian Anda secara objektif sesuai pengalaman Anda.
         </p>
-
     </div>
     <div class="card animate__animated animate__fadeInUp border-0 shadow-lg rounded-4">
         @if(session('error'))
@@ -32,81 +16,46 @@
         </div>
         @endif
         <div class="card-body">
-            <h3>
-                {{ $instrument->nama_instrumen }}
-            </h3>
-
-            <hr>
-
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
-                        <div>
-                            <strong>Progress Survey</strong>
-                        </div>
-                        <div>
-                            {{ $progress }}%
-                        </div>
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span>Progress Pengisian</span>
+                        <span id="progressText">0%</span>
                     </div>
-                    <div class="progress rounded-pill mb-4" style="height: 22px;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ $progress }}%; background: linear-gradient(90deg,#4e73df,#6f42c1);">
-                        </div>
+                    <div class="progress mt-2">
+                        <div id="progressBar" class="progress-bar" style="width:0%"></div>
                     </div>
                 </div>
-                {{-- WIZARD STEP --}}
-
-                <div class="row text-center mb-5">
-
-                    <div class="col">
-
-                        <div class="
-                            p-3
-                            rounded-4
-                            shadow-sm
-                            {{ $instrument->id >= 1 ? 'bg-primary text-white' : 'bg-light' }}
-                        ">
-                            Instrumen 1
-                        </div>
-
-                    </div>
-
-                    <div class="col">
-
-                        <div class="
-                            p-3
-                            rounded-4
-                            shadow-sm
-                            {{ $instrument->id >= 2 ? 'bg-primary text-white' : 'bg-light' }}
-                        ">
-                            Instrumen 2
-                        </div>
-
-                    </div>
-
-                    <div class="col">
-
-                        <div class="
-                            p-3
-                            rounded-4
-                            shadow-sm
-                            {{ $instrument->id >= 3 ? 'bg-primary text-white' : 'bg-light' }}
-                        ">
-                            Instrumen 3
-                        </div>
-
-                    </div>
-
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">
+                        {{ $instrument->nama_instrumen }}
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Silakan isi survey dengan objektif.
+                    </p>
                 </div>
-
-
-            <form method="POST" action="{{ route('survey.store-jawaban') }}">
+                <div>
+                    @if($instrument->id == 1)
+                        <span class="badge bg-primary fs-6">
+                            Evaluasi Dosen
+                        </span>
+                    @elseif($instrument->id == 2)
+                        <span class="badge bg-success fs-6">
+                            Layanan Akademik
+                        </span>
+                    @else
+                        <span class="badge bg-warning fs-6">
+                            Fasilitas Kampus
+                        </span>
+                    @endif
+                </div>
+            </div>
+            <form id="formSurvey" method="POST" action="{{ route('survey.store-jawaban') }}" autocomplete="off">
                 @csrf
-                <input type="hidden" name="session_id" value="{{ $session->id }}">
-
-                <input
-                    type="hidden"
-                    name="instrument_id"
-                    value="{{ $instrument->id }}"
-                >
+                <input type="hidden" name="mahasiswa_id" value="{{ $mahasiswa->id }}">
+                <input type="hidden" name="instrument_id" value="{{ $instrument->id }}">
 
                 {{-- KHUSUS INSTRUMEN 1 --}}
                 @if($instrument->id == 1)
@@ -143,7 +92,7 @@
                         </thead>
                         <tbody>
                         @foreach($category->questions as $question)
-                            <tr>
+                            <tr class="question-group">
                                 <td>{{ $question->pertanyaan }}</td>
                                 @for($i = 1; $i <= 4; $i++)
                                 <td class="text-center">
@@ -153,7 +102,11 @@
                                             class="form-check-input question-radio"
                                             name="jawaban[{{ $question->id }}]"
                                             value="{{ $i }}"
-                                            required>
+
+                                            @checked(
+                                                old('jawaban.'.$question->id) == $i
+                                            )
+                                        >
                                     </div>
                                 </td>
                                 @endfor
@@ -162,8 +115,9 @@
                         </tbody>
                     </table>
                 @endforeach
-                <button class="btn btn-lg btn-primary rounded-3 px-5" onclick="return confirm('Apakah Anda yakin ingin melanjutkan?')">
-                    Simpan & Lanjut
+                <button type="button" id="btnSubmitSurvey" class="btn btn-md btn-sikma rounded-3 px-5">
+                    <i class="bi bi-send"></i>
+                    Simpan dan Lanjutkan
                 </button>
             </form>
         </div>
@@ -173,40 +127,27 @@
 <script>
 
 document.querySelector('form').addEventListener('submit', function(e) {
-
     let totalQuestions = [];
-
     document.querySelectorAll('.question-radio').forEach(function(el){
-
         let name = el.getAttribute('name');
-
         if (!totalQuestions.includes(name)) {
             totalQuestions.push(name);
         }
-
     });
-
     for (let i = 0; i < totalQuestions.length; i++) {
-
         let checked = document.querySelector(
             'input[name="' + totalQuestions[i] + '"]:checked'
         );
-
         if (!checked) {
-
             e.preventDefault();
-
             let target = document.querySelector(
                 'input[name="' + totalQuestions[i] + '"]'
             );
-
             target.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
-
             alert('Masih ada pertanyaan yang belum diisi.');
-
             return false;
         }
     }
@@ -224,14 +165,119 @@ document.querySelector('form').addEventListener('submit', function(e) {
     });
 </script>
 <script>
-    window.onload = function() {
-        document.querySelectorAll('.question-radio').forEach(function(radio){
-            let saved = localStorage.getItem(radio.name);
-            if (saved == radio.value) {
-                radio.checked = true;
-            }
-        });
-    };
+
+document.querySelectorAll(
+    '.question-radio'
+).forEach(function(radio){
+
+    radio.addEventListener('change', function(){
+
+        localStorage.setItem(
+            this.name,
+            this.value
+        );
+
+    });
+
+});
+
 </script>
-</body>
-</html>
+<script>
+
+function updateProgress()
+{
+    let total = document.querySelectorAll(
+        '.question-group'
+    ).length;
+
+    let checked = document.querySelectorAll(
+        '.question-radio:checked'
+    ).length;
+
+    /*
+    |--------------------------------------------------------------------------
+    | ANTISIPASI DIVIDE BY ZERO
+    |--------------------------------------------------------------------------
+    */
+
+    if (total === 0) {
+
+        document.getElementById(
+            'progressBar'
+        ).style.width = '0%';
+
+        document.getElementById(
+            'progressText'
+        ).innerHTML = '0%';
+
+        return;
+    }
+
+    let percent = Math.round(
+        (checked / total) * 100
+    );
+
+    document.getElementById(
+        'progressBar'
+    ).style.width = percent + '%';
+
+    document.getElementById(
+        'progressText'
+    ).innerHTML = percent + '%';
+}
+
+document.querySelectorAll(
+    '.question-radio'
+).forEach(function(el){
+
+    el.addEventListener(
+        'change',
+        updateProgress
+    );
+
+});
+
+updateProgress();
+</script>
+@push('scripts')
+
+<script>
+document.addEventListener(
+    'DOMContentLoaded',
+    function(){
+        const btn = document.getElementById(
+            'btnSubmitSurvey'
+        );
+        btn.addEventListener(
+            'click',
+            function(){
+                Swal.fire({
+                    title: 'Kirim Survey?',
+                    text: 'Pastikan semua jawaban sudah benar.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4e73df',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Kirim',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menyimpan...',
+                            text: 'Mohon tunggu',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        document.getElementById(
+                            'formSurvey'
+                        ).submit();
+                    }
+                });
+            }
+        );
+    }
+);
+</script>
+@endpush

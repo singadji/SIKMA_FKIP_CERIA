@@ -1,49 +1,30 @@
 @extends('layouts.survey')
-
 @section('title', 'Biodata Mahasiswa')
 <div class="card border-0 shadow-lg rounded-4">
-
     <div class="card-body p-5">
-
         <div class="d-flex align-items-center mb-4">
-
             <div class="bg-primary text-white rounded-circle p-3 me-3">
-
                 <i class="bi bi-person-fill fs-3"></i>
-
             </div>
-
             <div>
-
                 <h3 class="fw-bold mb-0">
                     Biodata Mahasiswa
                 </h3>
-
                 <small class="text-muted">
                     Pastikan data mahasiswa sudah benar
                 </small>
-
             </div>
-
         </div>
 <div class="container mt-5">
-
     <div class="row justify-content-center">
-
         <div class="col-md-8">
-
             <div class="card shadow">
-
                 <div class="card-body">
-
                     @if(session('error'))
-
                         <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
-
                     @endif
-
                     <form method="POST" action="./store-biodata">
                         @csrf
                         <input type="hidden" name="mahasiswa_id" value="{{ $mahasiswa->id }}">
