@@ -28,7 +28,7 @@ class SurveyController extends Controller
         if (!$mahasiswa) {
             return back()->with("error", "NIM tidak terdaftar");
         }
-        return redirect("/survey/biodata/" . $mahasiswa->uuid);
+        return redirect("/survey/menu/" . $mahasiswa->uuid);
     }
 
     public function biodata(Mahasiswa $mahasiswa)

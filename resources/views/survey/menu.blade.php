@@ -17,6 +17,50 @@
             {{ session('error') }}
         </div>
         @endif
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-1 text-center">
+                        <div class="avatar-lg mx-auto">
+                            <div class="avatar-title bg-primary rounded-circle">
+                                <i class="bi bi-person-fill fs-1 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h3 class="fw-bold mb-1">
+                            {{ $mahasiswa->nama }}
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <small class="text-muted">
+                                    NIM
+                                </small>
+                                <div class="fw-semibold">
+                                    {{ $mahasiswa->nim }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">
+                                    Program Studi
+                                </small>
+                                <div class="fw-semibold">
+                                    {{ $mahasiswa->prodi->nama_prodi ?? '-' }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">
+                                    Jurusan
+                                </small>
+                                <div class="fw-semibold">
+                                    {{ $mahasiswa->jurusan->nama_jurusan ?? '-' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="card survey-card h-100">
