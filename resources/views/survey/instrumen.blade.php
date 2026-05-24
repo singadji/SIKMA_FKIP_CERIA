@@ -35,6 +35,7 @@
                     <p class="text-muted mb-0">
                         Silakan isi survey dengan objektif.
                     </p>
+                     <p class="text-muted mb-0"><b>STP</b>: Sangat Tidak Puas | <b>TP</b>: Tidak Puas | <b>P</b>: Puas | <b>SP</b>: Sangat Puas</p>
                 </div>
                 <div>
                     @if($instrument->id == 1)
@@ -42,7 +43,7 @@
                             Evaluasi Dosen
                         </span>
                     @elseif($instrument->id == 2)
-                        <span class="badge bg-success fs-6">
+                        <span class="badge bg-success 202441033">
                             Layanan Akademik
                         </span>
                     @else
@@ -61,17 +62,17 @@
                 @if($instrument->id == 1)
 
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label>Mata Kuliah</label>
-                        <input type="text" name="mata_kuliah" value="" class="form-control" required placeholder="Masukkan nama mata kuliah">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Dosen</label>
-                        <input type="text" name="dosen" value="" class="form-control" required placeholder="Masukkan nama dosen">
+                    <div class="col-md-12">
+                        <label>Mata Kuliah Yang Diikuti Semesater Ini</label>
+                        <input type="text" name="mata_kuliah" value="" class="form-control" required placeholder="Masukkan nama mata kuliah yang telah diikuti semesater ini">
                     </div>
                 </div>
+                <div class="row mb-4">
+                    <div class="col-md-12">
 
+                        <input type="hidden" name="dosen" value="" class="form-control" required placeholder="Masukkan nama mata kuliah yang telah diikuti semesater ini">
+                    </div>
+                </div>
                 @endif
 
                 @foreach($instrument->categories as $category)

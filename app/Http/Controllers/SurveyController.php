@@ -94,11 +94,9 @@ class SurveyController extends Controller
 
         if ($request->instrument_id == 1) {
             $request->validate([
-                "dosen" => "required",
                 "mata_kuliah" => "required",
             ]);
 
-            $dosen = $this->normalizeText($request->dosen);
             $mataKuliah = $this->normalizeText($request->mata_kuliah);
 
             $cek = SurveyAnswer::whereHas("session", function ($q) use (
@@ -107,7 +105,6 @@ class SurveyController extends Controller
                 $q->where("mahasiswa_id", $request->mahasiswa_id);
             })
                 ->where("instrument_id", 1)
-                ->whereRaw("LOWER(dosen) LIKE ?", ["%" . $dosen . "%"])
                 ->whereRaw("LOWER(mata_kuliah) LIKE ?", [
                     "%" . $mataKuliah . "%",
                 ])
@@ -116,7 +113,7 @@ class SurveyController extends Controller
             if ($cek) {
                 return back()->with(
                     "error",
-                    "Anda sudah menilai dosen dan mata kuliah ini.",
+                    "Anda sudah menilai mata kuliah ini.",
                 );
             }
         }
@@ -208,13 +205,13 @@ class SurveyController extends Controller
         }
 
         return redirect()
-            ->route("survey.selesai")
+            ->route("survey.selesai", $mahasiswa->uuid)
             ->with("success", "Terima kasih telah mengisi survey.");
     }
 
-    public function selesai()
+    public function selesai(Mahasiswa $mahasiswa)
     {
-        return view("survey.selesai");
+        return view("survey.selesai", compact("mahasiswa"));
     }
 
     public function menu(Mahasiswa $mahasiswa)
@@ -251,9 +248,16 @@ class SurveyController extends Controller
             ->where("instrument_id", 3)
             ->exists();
 
+        $periode = $this->getAcademicPeriod();
         return view(
             "survey.menu",
-            compact("mahasiswa", "instrumen1", "instrumen2", "instrumen3"),
+            compact(
+                "mahasiswa",
+                "instrumen1",
+                "instrumen2",
+                "instrumen3",
+                "periode",
+            ),
         );
     }
 

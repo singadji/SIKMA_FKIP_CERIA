@@ -18,7 +18,7 @@
     $modulesByParent = $mods->groupBy('par');
 
 @endphp
-<div class="vertical-menu">
+<div class="vertical-menu sikma-sidebar" style="background: linear-gradient(180deg, #4e73df, #6f42c1);">
     <div data-simplebar class="h-100">
         <div id="sidebar-menu">
             <ul class="metismenu list-unstyled" id="side-menu">

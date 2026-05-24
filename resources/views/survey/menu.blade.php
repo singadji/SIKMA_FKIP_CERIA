@@ -4,7 +4,8 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <div class="text-center mb-5">
-            <h1 class="fw-bold">Dashboard Survey Mahasiswa</h1>
+            <h1 class="fw-bold">Dashboard Survey Kepuasan Mahasiswa</h1>
+            <h3>Semester {{ $periode['semester'] }} Tahun Akademik {{ $periode['tahun_akademik'] }}</h3>
             <p class="text-muted">Pilih jenis survey yang ingin diisi</p>
         </div>
         @if(session('success'))
@@ -22,7 +23,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-1 text-center">
                         <div class="avatar-lg mx-auto">
-                            <div class="avatar-title bg-primary rounded-circle">
+                            <div class="avatar-title bg-primary">
                                 <i class="bi bi-person-fill fs-1 text-white"></i>
                             </div>
                         </div>
@@ -53,7 +54,7 @@
                                     Jurusan
                                 </small>
                                 <div class="fw-semibold">
-                                    {{ $mahasiswa->jurusan->nama_jurusan ?? '-' }}
+                                    {{ $mahasiswa->prodi->jurusan->nama_jurusan ?? '-' }}
                                 </div>
                             </div>
                         </div>
@@ -70,6 +71,7 @@
                         </div>
                         <h4 class="fw-bold">Evaluasi Dosen</h4>
                         <p class="text-muted">Penilaian dosen dan mata kuliah</p>
+                        <span class="badge bg-danger-subtle text-danger">Disi sesuai dengan jumlah Mata Kuliah<br> yang diambil</span>
                         <div class="mt-4">
                             <a href="{{ route('survey.instrumen', [$mahasiswa->uuid, 1]) }}" class="btn btn-sikma">Isi Survey</a>
                         </div>
@@ -84,6 +86,7 @@
                         </div>
                         <h4 class="fw-bold">Layanan Akademik</h4>
                         <p class="text-muted">Evaluasi layanan administrasi</p>
+                        <span class="badge bg-danger-subtle text-danger">Disi hanya satu kali</span>
                         <div class="mt-4">
                             @if(!$instrumen1)
                                 <button class="btn btn-secondary" disabled>Isi Survey</button>
@@ -105,6 +108,7 @@
                         </div>
                         <h4 class="fw-bold">Fasilitas Kampus</h4>
                         <p class="text-muted">Evaluasi sarana dan prasarana</p>
+                        <span class="badge bg-danger-subtle text-danger">Disi hanya satu kali</span>
                         <div class="mt-4">
                             @if(!$instrumen2)
                                 <button class="btn btn-secondary" disabled>Isi Survey</button>

@@ -9,7 +9,7 @@
     <title>
         @yield('title') | SIKMA FKIP CERIA
     </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -83,8 +83,9 @@
 <body>
 <div class="container py-5">
     @yield('content')
-</div>
+    @include('layouts.footer')
 
+</div>
 {{-- Bootstrap JS --}}
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">

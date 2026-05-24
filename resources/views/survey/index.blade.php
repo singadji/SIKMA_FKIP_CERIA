@@ -4,25 +4,19 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>
         SIKMA FKIP CERIA
     </title>
-
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
-
     <style>
-
         body{
             background:
                 linear-gradient(
@@ -30,26 +24,18 @@
                     #4e73df,
                     #6f42c1
                 );
-
             min-height:100vh;
         }
 
         .survey-card{
-
             border:none;
-
             border-radius:25px;
-
             overflow:hidden;
-
             backdrop-filter: blur(10px);
-
             box-shadow:
                 0 10px 40px rgba(0,0,0,0.2);
         }
-
         .left-panel{
-
             background:
                 linear-gradient(
                     180deg,
@@ -58,7 +44,6 @@
                 );
 
             color:white;
-
             padding:60px 40px;
         }
 
@@ -66,36 +51,23 @@
             padding:60px 40px;
             background:white;
         }
-
         .logo-circle{
-
             width:100px;
             height:100px;
-
             border-radius:50%;
-
             background:white;
-
             display:flex;
-
             align-items:center;
-
             justify-content:center;
-
             margin:auto;
-
             font-size:40px;
-
             color:#4e73df;
         }
 
         .btn-sikma{
-
             background:#4e73df;
             border:none;
-
             border-radius:12px;
-
             padding:12px;
         }
 
@@ -107,7 +79,6 @@
             border-radius:12px;
             padding:12px;
         }
-
     </style>
 
 </head>

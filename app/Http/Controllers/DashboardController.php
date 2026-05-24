@@ -8,90 +8,47 @@ use App\Models\Mahasiswa;
 use App\Models\SurveyInstrument;
 use Illuminate\Support\Facades\DB;
 use App\Models\SurveyCategory;
+use App\Models\Prodi;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | SUMMARY
-        |--------------------------------------------------------------------------
-        */
-
-        $totalResponden = SurveySession::count();
-
+        $totalResponden = SurveySession::distinct("mahasiswa_id")->count(
+            "mahasiswa_id",
+        );
         $totalMahasiswa = Mahasiswa::count();
-
         $totalInstrumen = SurveyInstrument::count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | IKM
-        |--------------------------------------------------------------------------
-        */
-
         $totalNilai = SurveyAnswer::sum("jawaban");
-
         $totalJawaban = SurveyAnswer::count();
-
+        $totalProdi = Prodi::count();
         $ikm = 0;
 
         if ($totalJawaban > 0) {
             $ikm = round(($totalNilai / ($totalJawaban * 4)) * 100, 2);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | RADAR SERVQUAL
-        |--------------------------------------------------------------------------
-        */
-
-        $radar = SurveyCategory::select(
-            "survey_categories.nama_kategori",
-            DB::raw("AVG(survey_answers.jawaban) as rata"),
+        $instrumenChart = SurveyInstrument::leftJoin(
+            "survey_answers",
+            "survey_instruments.id",
+            "=",
+            "survey_answers.instrument_id",
         )
-            ->join(
-                "survey_questions",
-                "survey_questions.category_id",
-                "=",
-                "survey_categories.id",
+            ->select(
+                "survey_instruments.nama_instrumen",
+                DB::raw("COUNT(survey_answers.id) as total"),
             )
-            ->join(
-                "survey_answers",
-                "survey_answers.question_id",
-                "=",
-                "survey_questions.id",
-            )
-            ->groupBy("survey_categories.nama_kategori")
-            ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | PIE CHART INSTRUMEN
-        |--------------------------------------------------------------------------
-        */
-
-        $instrumenChart = SurveyInstrument::select(
-            "survey_instruments.nama_instrumen",
-            DB::raw("COUNT(survey_answers.id) as total"),
-        )
-            ->leftJoin(
-                "survey_answers",
-                "survey_answers.instrument_id",
-                "=",
+            ->groupBy(
                 "survey_instruments.id",
+                "survey_instruments.nama_instrumen",
             )
-            ->groupBy("survey_instruments.nama_instrumen")
+            ->orderBy("survey_instruments.id")
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHART PRODI
-        |--------------------------------------------------------------------------
-        */
+        $pieLabels = $instrumenChart->pluck("nama_instrumen");
+        $pieSeries = $instrumenChart->pluck("total");
 
-        $chartProdi = DB::table("survey_answers")
+        $kepuasanPerProdi = DB::table("survey_answers")
             ->join(
                 "survey_sessions",
                 "survey_sessions.id",
@@ -107,27 +64,16 @@ class DashboardController extends Controller
             ->join("prodi", "prodi.id", "=", "mahasiswa.prodi_id")
             ->select(
                 "prodi.nama_prodi",
-                DB::raw("AVG(survey_answers.jawaban) as rata"),
+                DB::raw("AVG(survey_answers.jawaban) as rata_rata"),
             )
             ->groupBy("prodi.nama_prodi")
+            ->orderByDesc("rata_rata")
             ->get();
-
         /*
         |--------------------------------------------------------------------------
-        | CHART DOSEN
+        | CHART MATA KULIAH
         |--------------------------------------------------------------------------
         */
-
-        $chartDosen = DB::table("survey_answers")
-            ->join("dosen", "dosen.id", "=", "survey_answers.dosen_id")
-            ->select(
-                "dosen.nama_dosen",
-                DB::raw("AVG(survey_answers.jawaban) as rata"),
-            )
-            ->whereNotNull("survey_answers.dosen_id")
-            ->groupBy("dosen.nama_dosen")
-            ->limit(10)
-            ->get();
 
         /*
         |--------------------------------------------------------------------------
@@ -140,18 +86,20 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        $surveySessions = SurveySession::all();
+
         return view(
             "dashboard.index",
             compact(
                 "totalResponden",
                 "totalMahasiswa",
-                "totalInstrumen",
                 "ikm",
-                "radar",
-                "instrumenChart",
-                "chartProdi",
-                "chartDosen",
+                "pieLabels",
+                "pieSeries",
                 "latestSurvey",
+                "totalProdi",
+                "kepuasanPerProdi",
+                "surveySessions",
             ),
         );
     }

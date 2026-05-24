@@ -1,15 +1,15 @@
 
 <header id="page-topbar">
-    <div class="navbar-header">
+    <div class="navbar-header bg-primary">
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
                 <a href="{{ url('admin/home') }}" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ asset('assets/images/logo-sm.png') }}"  alt="" height="40">
+                        <img src="{{ asset('assets/images/logo.png') }}"  alt="" height="40">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('assets/images/logo.png') }}"  alt="" height="70">
+                        <img src="{{ asset('assets/images/logo_m.png') }}"  alt="" height="70">
                     </span>
                 </a>
             </div>

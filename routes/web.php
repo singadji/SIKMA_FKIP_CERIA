@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ModulController;
 
 Route::get("/", function () {
     return view("welcome");
@@ -37,6 +38,18 @@ Route::middleware(["auth"])->group(function () {
         ReportController::class,
         "laporanServqual",
     ])->name("laporan.servqual");
+
+    Route::resource("modul", ModulController::class);
+
+    Route::patch("/modul/{modul}/aktif", [
+        ModulController::class,
+        "aktif",
+    ])->name("modul.aktif");
+
+    Route::patch("/modul/{modul}/nonaktif", [
+        ModulController::class,
+        "nonaktif",
+    ])->name("modul.nonaktif");
 });
 
 Route::get("/", [SurveyController::class, "index"])->name("survey.index");
@@ -69,8 +82,9 @@ Route::post("/survey/store-jawaban", [
     "storeJawaban",
 ])->name("survey.store-jawaban");
 
-Route::get("/survey/selesai", [SurveyController::class, "selesai"])->name(
-    "survey.selesai",
-);
+Route::get("/survey/selesai/{mahasiswa}", [
+    SurveyController::class,
+    "selesai",
+])->name("survey.selesai");
 
 require __DIR__ . "/auth.php";

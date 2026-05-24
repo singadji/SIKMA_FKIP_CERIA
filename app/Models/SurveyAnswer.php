@@ -12,9 +12,7 @@ class SurveyAnswer extends Model
         "instrument_id",
         "question_id",
         "jawaban",
-        "dosen_id",
         "mata_kuliah_id",
-        "dosen",
         "mata_kuliah",
     ];
 

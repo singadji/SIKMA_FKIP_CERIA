@@ -17,7 +17,7 @@ class GenerateMahasiswaUuid extends Command
         $this->info("Generate UUID mahasiswa...");
 
         Mahasiswa::whereNull("uuid")
-        ->chunk(100, function ($items) {
+        ->chunkById(100, function ($items) {
             foreach ($items as $item) {
                 $item->uuid = Str::uuid();
 

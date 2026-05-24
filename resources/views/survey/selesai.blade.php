@@ -16,8 +16,14 @@
                     <p class="mt-3">
                         Terima kasih telah mengisi survey kepuasan mahasiswa.
                     </p>
-                    <a href="./" class="btn btn-primary mt-3">
-                        Kembali
+                    <a
+                        href="{{ route(
+                            'survey.menu',
+                            $mahasiswa->uuid
+                        ) }}"
+                        class="btn btn-primary mt-3"
+                    >
+                        Kembali ke Dashboard
                     </a>
                 </div>
             </div>
