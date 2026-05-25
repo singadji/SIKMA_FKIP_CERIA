@@ -2,13 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ModulRequest;
 use App\Models\Modul;
-use Carbon\Carbon;
-use Illuminate\Contracts\View\View;
 
 class ModulController extends Controller
 {

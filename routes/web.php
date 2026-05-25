@@ -5,6 +5,9 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ModulController;
+use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\InstrumentController;
 
 Route::get("/", function () {
     return view("welcome");
@@ -50,6 +53,32 @@ Route::middleware(["auth"])->group(function () {
         ModulController::class,
         "nonaktif",
     ])->name("modul.nonaktif");
+
+    Route::resource("prodi", ProdiController::class);
+    Route::resource("instrument", InstrumentController::class);
+    Route::patch("/instrument/{instrument}/aktif", [
+        InstrumentController::class,
+        "aktif",
+    ])->name("instrument.aktif");
+
+    Route::patch("/instrument/{instrument}/nonaktif", [
+        InstrumentController::class,
+        "nonaktif",
+    ])->name("instrument.nonaktif");
+
+    Route::resource("mahasiswa", MahasiswaController::class);
+    Route::get("/mahasiswa/data", [MahasiswaController::class, "data"])->name(
+        "mahasiswa.data",
+    );
+    Route::patch("/mahasiswa/{mahasiswa}/aktif", [
+        MahasiswaController::class,
+        "aktif",
+    ])->name("mahasiswa.aktif");
+
+    Route::patch("/mahasiswa/{mahasiswa}/nonaktif", [
+        MahasiswaController::class,
+        "nonaktif",
+    ])->name("mahasiswa.nonaktif");
 });
 
 Route::get("/", [SurveyController::class, "index"])->name("survey.index");

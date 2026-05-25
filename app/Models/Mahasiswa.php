@@ -4,15 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mahasiswa extends Model
 {
+    use SoftDeletes;
+
     protected $table = "mahasiswa";
 
     protected $fillable = [
+        "uuid",
         "nim",
         "nama",
-        "prodi",
+        "prodi_id",
         "jurusan",
         "status_aktif",
         "created_by",
