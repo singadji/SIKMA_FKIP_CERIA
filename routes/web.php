@@ -8,6 +8,9 @@ use App\Http\Controllers\ModulController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\InstrumentController;
+use App\Http\Controllers\SurveyCategoryController;
+use App\Http\Controllers\QuestionSurveyController;
+use App\Http\Controllers\AnalyticsController;
 
 Route::get("/", function () {
     return view("welcome");
@@ -55,6 +58,8 @@ Route::middleware(["auth"])->group(function () {
     ])->name("modul.nonaktif");
 
     Route::resource("prodi", ProdiController::class);
+    Route::resource("kategori-survey", SurveyCategoryController::class);
+    Route::resource("pertanyaan-survey", QuestionSurveyController::class);
     Route::resource("instrument", InstrumentController::class);
     Route::patch("/instrument/{instrument}/aktif", [
         InstrumentController::class,
@@ -79,6 +84,21 @@ Route::middleware(["auth"])->group(function () {
         MahasiswaController::class,
         "nonaktif",
     ])->name("mahasiswa.nonaktif");
+
+    Route::get("/analytics/prodi", [
+        AnalyticsController::class,
+        "perProdi",
+    ])->name("analytics.prodi");
+
+    Route::get("/analytics/instrumen", [
+        AnalyticsController::class,
+        "perInstrumen",
+    ])->name("analytics.prodi");
+
+    Route::get("/analytics/fakultas", [
+        AnalyticsController::class,
+        "laporanFakultas",
+    ])->name("analytics.fakultas");
 });
 
 Route::get("/", [SurveyController::class, "index"])->name("survey.index");

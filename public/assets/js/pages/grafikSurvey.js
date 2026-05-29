@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 horizontal: true,
                 borderRadius: 0,
                 distributed: true,
-                barHeight: "65%",
+                barHeight: "50%",
             },
         },
         colors: [

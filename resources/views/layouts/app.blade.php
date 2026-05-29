@@ -330,7 +330,7 @@ if (!function_exists('isParentActive')) {
         <script src="{{ asset('assets/js/app.js') }}"></script>
 
         @stack('js')
-
+@stack('scripts')
     </body>
 
 </html>

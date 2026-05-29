@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\SurveyInstrument;
-use App\Http\Requests\StoreInstrumentRequest;
-use Masterminds\HTML5\InstructionProcessor;
 use App\Http\Requests\InstrumenRequest;
 
 class InstrumentController extends Controller

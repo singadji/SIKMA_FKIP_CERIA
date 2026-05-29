@@ -29,7 +29,6 @@
                                 <th class="text-center">Kode Instrumen</th>
                                 <th>Nama Instrumen</th>
                                 <th>Deskripsi</th>
-                                <th>Aktif</th>
                                 <th width="120" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -40,17 +39,6 @@
                                 <td><div class="fw-semibold">{{ $row->kode }}</div></td>
                                 <td><div class="fw-semibold">{{ $row->nama_instrumen }}</div></td>
                                 <td><span class="badge bg-light text-dark">{{ $row->deskripsi }}</span></td>
-                                <td>
-                                    <a href="#"
-                                       class="btn-publish-toggle"
-                                       data-url="{{ $row->is_active ? route('instrument.nonaktif', $row->uuid) : route('instrument.aktif', $row->uuid) }}">
-                                        <input type="checkbox"
-                                            id="aktif{{ $row->uuid }}"
-                                            switch="success"
-                                            {{ $row->is_active ? 'checked' : '' }}>
-                                        <label for="aktif{{ $row->uuid }}" data-on-label="Ya" data-off-label="Tidak"></label>
-                                    </a>
-                                </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <a href="{{ route('instrument.edit', $row->uuid) }}"

@@ -33,6 +33,11 @@ class SurveyCategory extends Model
         $this->save();
     }
 
+    public function instrument()
+    {
+        return $this->belongsTo(SurveyInstrument::class, "instrument_id");
+    }
+
     protected static function boot()
     {
         parent::boot();

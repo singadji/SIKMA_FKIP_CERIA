@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\SurveyQuestion;
+use App\Http\Request\SurveyQuestionRequest;
 
-class KategoriSurveyController extends Controller
+class QuestionSurveyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +26,7 @@ class KategoriSurveyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SurveyQuestionRequest $request)
     {
         //
     }
@@ -49,7 +50,7 @@ class KategoriSurveyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(SurveyQuestionRequest $request, string $id)
     {
         //
     }
