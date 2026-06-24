@@ -85,77 +85,6 @@
                                 </h5>
                                 <p class="text-muted small mb-3">Selesaikan semua survey untuk memberikan feedback terbaik</p>
                                 
-                                <div class="progress-container">
-                                    <div class="progress" style="height: 12px;">
-                                        <?php 
-                                            $total_surveys = 3;
-                                            $completed = 0;
-                                            if ($instrumen1) $completed++;
-                                            if ($instrumen2) $completed++;
-                                            if ($instrumen3) $completed++;
-                                            $progress = ($completed / $total_surveys) * 100;
-                                        ?>
-                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                             role="progressbar" 
-                                             style="width: {{ $progress }}%;" 
-                                             aria-valuenow="{{ $progress }}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="progress-stats mt-3">
-                                    <div class="row">
-                                        <div class="col-6 col-md-3">
-                                            <div class="stat-item">
-                                                <h6 class="stat-label">Selesai</h6>
-                                                <p class="stat-value text-success fw-bold">{{ $completed }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-3">
-                                            <div class="stat-item">
-                                                <h6 class="stat-label">Sisa</h6>
-                                                <p class="stat-value text-warning fw-bold">{{ $total_surveys - $completed }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-3">
-                                            <div class="stat-item">
-                                                <h6 class="stat-label">Total</h6>
-                                                <p class="stat-value text-primary fw-bold">{{ $total_surveys }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-3">
-                                            <div class="stat-item">
-                                                <h6 class="stat-label">Progres</h6>
-                                                <p class="stat-value text-info fw-bold">{{ round($progress) }}%</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="progress-circle-wrapper text-center">
-                                    <div class="circular-progress">
-                                        <svg viewBox="0 0 100 100" class="progress-ring">
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e9ecef" stroke-width="3" />
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" stroke-width="3" 
-                                                    stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $progress / 100) }}"
-                                                    stroke-linecap="round" />
-                                            <defs>
-                                                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                    <stop offset="0%" style="stop-color:#4e73df;stop-opacity:1" />
-                                                    <stop offset="100%" style="stop-color:#6f42c1;stop-opacity:1" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="progress-text">
-                                            <p class="progress-number">{{ $completed }}/{{ $total_surveys }}</p>
-                                            <p class="progress-label">Selesai</p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +100,7 @@
                             <div class="card-icon-wrapper">
                                 <i class="bi bi-person-video3"></i>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body p-4">
                                 <div class="card-badge">
                                     <span class="badge bg-primary">{{ $instrumen1 ? '✓ Aktif' : 'Belum Dimulai' }}</span>
                                 </div>
@@ -205,7 +134,7 @@
                             <div class="card-icon-wrapper">
                                 <i class="bi bi-building"></i>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body p-4">
                                 <div class="card-badge">
                                     @if($instrumen2)
                                         <span class="badge bg-success">✓ Selesai</span>
@@ -258,7 +187,7 @@
                             <div class="card-icon-wrapper">
                                 <i class="bi bi-pc-display"></i>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body p-4">
                                 <div class="card-badge">
                                     @if($instrumen3)
                                         <span class="badge bg-success">✓ Selesai</span>
