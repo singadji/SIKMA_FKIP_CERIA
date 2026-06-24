@@ -12,7 +12,22 @@ class QuestionSurveyController extends Controller
      */
     public function index()
     {
-        //
+        $btn =
+            '<a href="' .
+            route("pertanyaan-survey.create") .
+            '" class="btn btn-primary btn-sm float-end ms-2">
+                     <i class="fa fa-plus-circle"></i> Kategori Baru</a>';
+
+        $page = "Content Management";
+        $judul = "Kategori Survey";
+        $subjudul = "Administrasi Kategori Survey";
+
+        $item = SurveyQuestion::with("category")->get();
+
+        return view(
+            "admin.pertanyaan.index",
+            compact("item", "btn", "page", "judul", "subjudul"),
+        );
     }
 
     /**

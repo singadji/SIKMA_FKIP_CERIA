@@ -12,7 +12,7 @@
                             {{ $subjudul }}
                         </h4>
                         <small class="text-muted">
-                            Daftar Kategori Instrumen Survey Kepuasan FKIP Universitas Pattimura
+                            Daftar Pertanyaan Survey Kepuasan Mahasiswa FKIP Universitas Pattimura
                         </small>
                     </div>
                     <div class="col-md-6 text-md-end mt-3 mt-md-0">
@@ -41,10 +41,8 @@
                                     $currentInstrument = $row->instrument->nama_instrumen;
                                 @endphp
                                 <tr class="table-primary">
-                                    <td colspan="4" class="fw-bold text-uppercase">
-                                        <i class="mdi mdi-folder-open-outline me-1"></i>
-                                            {{ $currentInstrument }}
-                                    </td>
+                                    <td class="fw-bold text-uppercase"><i class="mdi mdi-folder-open-outline me-1"></i></td>
+                                    <td>{{ $currentInstrument }}</td>
                                 </tr>
                             @endif
                             <tr>

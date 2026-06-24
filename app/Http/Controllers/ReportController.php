@@ -11,30 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | EXPORT PDF
-    |--------------------------------------------------------------------------
-    */
-
+   
     public function exportPdf()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | DATA
-        |--------------------------------------------------------------------------
-        */
-
         $survey = SurveySession::with("mahasiswa")->latest()->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | IKM
-        |--------------------------------------------------------------------------
-        */
-
         $totalNilai = SurveyAnswer::sum("jawaban");
-
         $totalJawaban = SurveyAnswer::count();
 
         $ikm = 0;
@@ -43,24 +24,12 @@ class ReportController extends Controller
             $ikm = round(($totalNilai / ($totalJawaban * 4)) * 100, 2);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | PDF
-        |--------------------------------------------------------------------------
-        */
-
         $pdf = Pdf::loadView("laporan.pdf", compact("survey", "ikm"));
 
         $pdf->setPaper("A4", "landscape");
 
         return $pdf->download("laporan-sikma.pdf");
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXPORT EXCEL
-    |--------------------------------------------------------------------------
-    */
 
     public function exportExcel()
     {

@@ -1,0 +1,254 @@
+/* Accessibility Enhancements for SIKMA FKIP CERIA */
+
+/* Focus Visible - Better keyboard navigation visibility */
+:focus-visible {
+  outline: 3px solid #800080;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  box-shadow: 0 0 0 4px rgba(128, 0, 128, 0.25);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  body {
+    color: #000;
+    background-color: #fff;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  button, .btn {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Improved text readability */
+body {
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+p, li, td {
+  line-height: 1.7;
+}
+
+/* Improved form accessibility */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="search"],
+input[type="tel"],
+select,
+textarea {
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #800080;
+  box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.15);
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #800080;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+  outline: none;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Improved button states */
+button, .btn, [role="button"] {
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled),
+[role="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled),
+[role="button"]:active {
+  transform: translateY(0);
+}
+
+button:disabled,
+.btn:disabled,
+[role="button"][aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Improved link visibility */
+a {
+  color: #0066cc;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+a:visited {
+  color: #663399;
+}
+
+a:hover {
+  color: #800080;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Improved table accessibility */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Improved color contrast for alerts/messages */
+.alert {
+  border-left: 4px solid;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.alert-error, .alert-danger {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+  color: #856404;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+  color: #0c5460;
+}
+
+/* Improved responsive typography */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.1rem; }
+}
+
+/* Print styles for better accessibility */
+@media print {
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+  
+  button, .no-print {
+    display: none;
+  }
+}

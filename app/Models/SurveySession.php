@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SurveySession extends Model
 {
+    use SoftDeletes;
+
     protected $table = "survey_sessions";
     protected $fillable = [
         "mahasiswa_id",
