@@ -1,6 +1,7 @@
 @extends('layouts.survey')
 @section('title', 'Menu Survey')
 @section('content')
+
 <div class="survey-menu-container">
     <div class="row justify-content-center">
         <div class="col-lg-10">
